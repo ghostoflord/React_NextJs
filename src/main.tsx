@@ -12,6 +12,7 @@ import { TeamOutlined, FireOutlined } from
   '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
+import UsersPage from './screens/users.page.tsx';
 
 const items: MenuProps['items'] = [
   {
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
       {
 
         path: "users",
-        // element: <UsersPage />,
+        element: <UsersPage />,
       },
 
     ]
