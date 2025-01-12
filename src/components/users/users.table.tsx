@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Table, Button, notification } from 'antd';
+// import '../../styles/users.css';
+import { Table, Button, notification, Popconfirm, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined } from '@ant-design/icons';
 import CreateUserModal from './create.user.model';
@@ -26,7 +27,6 @@ const UsersTable = () => {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
     const [dataUpdate, setDataUpdate] = useState<null | IUsers>(null);
-
 
     const access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b2tlbiBsb2dpbiIsImlzcyI6ImZyb20gc2VydmVyIiwiX2lkIjoiNjc3ZThlODljOGY3N2U4YTM4NDA3OTM3IiwiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJhZGRyZXNzIjoiVmlldE5hbSIsImlzVmVyaWZ5Ijp0cnVlLCJuYW1lIjoiSSdtIGFkbWluIiwidHlwZSI6IlNZU1RFTSIsInJvbGUiOiJBRE1JTiIsImdlbmRlciI6Ik1BTEUiLCJhZ2UiOjY5LCJpYXQiOjE3MzY2NTQxNjksImV4cCI6MTgyMzA1NDE2OX0.BbZXIXrqVncWH8FgQVJtn8sdP7PjHRhS1IQhUYLMNJw"
 
@@ -57,6 +57,30 @@ const UsersTable = () => {
         setListUsers(d.data.result)
     }
 
+    const confirm = async (user: IUsers) => {
+        const res = await fetch(
+            `http://localhost:8000/api/v1/users/${user._id}`,
+            {
+                method: "DELETE",
+                headers: {
+                    'Authorization': `Bearer ${access_token}`,
+                    "Content-Type": "application/json",
+                },
+            })
+
+        const d = await res.json();
+        if (d.data) {
+            notification.success({
+                message: "Xóa user thành công."
+            })
+            await getData();
+        } else {
+            notification.error({
+                message: JSON.stringify(d.message)
+            })
+        }
+    };
+
     const columns: ColumnsType<IUsers> = [
         {
             title: 'Email',
@@ -77,13 +101,27 @@ const UsersTable = () => {
             title: 'Actions',
             render: (value, record) => {
 
-                return (<div>
-                    <button onClick={() => {
-                        setDataUpdate(record);
-                        setIsUpdateModalOpen(true)
-                    }}>Edit</button>
+                return (
+                    <div>
+                        <button onClick={() => {
+                            setDataUpdate(record);
+                            setIsUpdateModalOpen(true)
+                        }}>Edit</button>
 
-                </div>)
+                        <Popconfirm
+                            title="Delete the user"
+                            description={`Are you sure to delete this user. name = ${record.name}?`}
+                            onConfirm={() => confirm(record)}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button
+                                style={{ marginLeft: 20 }}
+                                danger>
+                                Delete
+                            </Button>
+                        </Popconfirm>
+                    </div>)
             }
         }
     ]

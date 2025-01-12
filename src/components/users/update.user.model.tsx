@@ -41,37 +41,40 @@ const UpdateUserModal = (props: IProps) => {
     }, [dataUpdate])
 
     const handleOk = async () => {
-        const data = {
-            name, email, password, age, gender, role, address
+        if (dataUpdate) {
+
+            const data = {
+                _id: dataUpdate._id, //undefined
+                name, email, age, gender, role, address
+            }
+
+            const res = await fetch(
+                "http://localhost:8000/api/v1/users",
+                {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data)
+                })
+
+            const d = await res.json();
+            if (d.data) {
+                //success
+                await getData();
+                notification.success({
+                    message: "Cập nhật user thành công.",
+                })
+                handleCloseCreateModal();
+            } else {
+                ///
+                notification.error({
+                    message: "Có lỗi xảy ra",
+                    description: JSON.stringify(d.message)
+                })
+            }
         }
-
-        const res = await fetch(
-            "http://localhost:8000/api/v1/users",
-            {
-                method: "POST",
-                headers: {
-                    'Authorization': `Bearer ${access_token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ ...data })
-            })
-
-        const d = await res.json();
-        if (d.data) {
-            //success
-            await getData();
-            notification.success({
-                message: "Tạo mới user thành công.",
-            })
-            handleCloseCreateModal();
-        } else {
-            ///
-            notification.error({
-                message: "Có lỗi xảy ra",
-                description: JSON.stringify(d.message)
-            })
-        }
-
     };
 
     const handleCloseCreateModal = () => {
