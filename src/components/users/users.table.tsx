@@ -5,7 +5,6 @@ import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined } from '@ant-design/icons';
 import CreateUserModal from './create.user.model';
 import UpdateUserModal from './update.user.model';
-
 export interface IUsers {
     _id: string;
     email: string;
@@ -31,13 +30,6 @@ const UsersTable = () => {
     const access_token = localStorage.getItem("access_token") as string;
 
 
-    const [meta, setMeta] = useState({
-        current: 1,
-        pageSize: 5,
-        pages: 0,
-        total: 0
-    })
-
     useEffect(() => {
         //update
         getData()
@@ -47,7 +39,7 @@ const UsersTable = () => {
     const getData = async () => {
 
         const res = await fetch(
-            `http://localhost:8000/api/v1/users?current=${meta.current}&pageSize=${meta.pageSize}`,
+            "http://localhost:8000/api/v1/users/all",
             {
                 headers: {
                     'Authorization': `Bearer ${access_token}`,
@@ -62,12 +54,6 @@ const UsersTable = () => {
             })
         }
         setListUsers(d.data.result)
-        setMeta({
-            current: d.data.meta.current,
-            pageSize: d.data.meta.pageSize,
-            pages: d.data.meta.pages,
-            total: d.data.meta.total
-        })
     }
 
     const confirm = async (user: IUsers) => {
@@ -140,30 +126,6 @@ const UsersTable = () => {
     ]
 
 
-    const handleOnChange = async (page: number, pageSize: number) => {
-        const res = await fetch(
-            `http://localhost:8000/api/v1/users?current=${page}&pageSize=${pageSize}`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${access_token}`,
-                    "Content-Type": "application/json",
-                },
-            })
-
-        const d = await res.json();
-        if (!d.data) {
-            notification.error({
-                message: JSON.stringify(d.message)
-            })
-        }
-        setListUsers(d.data.result)
-        setMeta({
-            current: d.data.meta.current,
-            pageSize: d.data.meta.pageSize,
-            pages: d.data.meta.pages,
-            total: d.data.meta.total
-        })
-    }
 
     return (
         <div>
@@ -187,14 +149,6 @@ const UsersTable = () => {
                 columns={columns}
                 dataSource={listUsers}
                 rowKey={"_id"}
-                pagination={{
-                    current: meta.current,
-                    pageSize: meta.pageSize,
-                    total: meta.total,
-                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-                    onChange: (page: number, pageSize: number) => handleOnChange(page, pageSize),
-                    showSizeChanger: true
-                }}
             />
 
             <CreateUserModal
