@@ -9,10 +9,11 @@ import {
 } from "react-router-dom";
 import UsersPage from './screens/users.page.tsx';
 
-import { TeamOutlined, FireOutlined } from
+import { TeamOutlined, FireOutlined, CustomerServiceOutlined } from
   '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
+import TracksPage from './screens/tracks.page.tsx';
 
 const items: MenuProps['items'] = [
   {
@@ -24,7 +25,11 @@ const items: MenuProps['items'] = [
     label: <Link to='/users'>Manage Users</Link>,
     key: 'users',
     icon: <TeamOutlined />,
-
+  },
+  {
+    label: <Link to='/tracks'>Manage Tracks</Link>,
+    key: 'tracks',
+    icon: <CustomerServiceOutlined />,
   },
 
 ];
@@ -91,6 +96,11 @@ const router = createBrowserRouter([
 
         path: "users",
         element: <UsersPage />,
+      },
+      {
+
+        path: "tracks",
+        element: <TracksPage />,
       },
 
     ]
