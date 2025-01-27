@@ -9,12 +9,13 @@ import {
 } from "react-router-dom";
 import UsersPage from './screens/users.page.tsx';
 
-import { TeamOutlined, FireOutlined, CustomerServiceOutlined } from
+import { TeamOutlined, FireOutlined, AudioOutlined, BookOutlined } from
   '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
+import './App.css'
 import TracksPage from './screens/tracks.page.tsx';
-
+import CommentsPage from './screens/comments.page.tsx';
 const items: MenuProps['items'] = [
   {
     label: <Link to={'/'}>Home</Link>,
@@ -29,9 +30,13 @@ const items: MenuProps['items'] = [
   {
     label: <Link to='/tracks'>Manage Tracks</Link>,
     key: 'tracks',
-    icon: <CustomerServiceOutlined />,
+    icon: <AudioOutlined />,
   },
-
+  {
+    label: <Link to='/comments'>Manage Comments</Link>,
+    key: 'comments',
+    icon: <BookOutlined />,
+  },
 ];
 
 const Header = () => {
@@ -98,18 +103,17 @@ const router = createBrowserRouter([
         element: <UsersPage />,
       },
       {
-
         path: "tracks",
         element: <TracksPage />,
       },
-
+      {
+        path: "comments",
+        element: <CommentsPage />,
+      },
     ]
   },
 
-  {
-    path: "/tracks",
-    element: <div> manage tracks</div>,
-  },
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
